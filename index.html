@@ -225,15 +225,15 @@ async function joinWaitlist() {
     return;
   }
 
-  await fetch('https://anarghya.app.n8n.cloud/webhook/waitlist', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email
-    })
-  });
+ await fetch('https://anarghya.app.n8n.cloud/webhook/waitlist', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    email: email
+  })
+});
 
   document.getElementById('emailInput').style.borderColor = '#1D9E75';
   document.querySelector('.email-row').style.display = 'none';
