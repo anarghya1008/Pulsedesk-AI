@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PulseDesk AI — Automated Feedback Handler</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f9f9f7; color: #1a1a1a; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: #fff; border-bottom: 1px solid #e8e8e4; position: sticky; top: 0; z-index: 10; }
+    .nav-logo { font-size: 16px; font-weight: 600; color: #185FA5; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { font-size: 14px; color: #555; text-decoration: none; }
+    .nav-cta { background: #185FA5; color: #fff !important; padding: 8px 18px; border-radius: 8px; font-size: 14px; text-decoration: none; }
+
+    /* HERO */
+    .hero { text-align: center; padding: 4rem 2rem 3rem; max-width: 700px; margin: 0 auto; }
+    .badge { display: inline-block; background: #E6F1FB; color: #185FA5; font-size: 12px; padding: 4px 14px; border-radius: 20px; margin-bottom: 1.25rem; }
+    .hero h1 { font-size: 38px; font-weight: 600; line-height: 1.25; margin-bottom: 1rem; color: #111; }
+    .hero h1 span { color: #185FA5; }
+    .hero p { font-size: 17px; color: #555; line-height: 1.7; margin-bottom: 2rem; }
+    .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn-primary { background: #185FA5; color: #fff; border: none; padding: 13px 30px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; }
+    .btn-primary:hover { background: #0C447C; }
+    .btn-ghost { background: transparent; border: 1px solid #ddd; color: #333; padding: 13px 30px; border-radius: 8px; font-size: 15px; cursor: pointer; text-decoration: none; }
+    .btn-ghost:hover { background: #f0f0ee; }
+
+    /* FLOW */
+    .flow-preview { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0 auto 1rem; }
+    .flow-node { background: #fff; border: 1px solid #e0e0dc; border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #666; white-space: nowrap; }
+    .flow-arrow { color: #aaa; font-size: 18px; padding: 0 8px; }
+    .flow-node.hl { border-color: #378ADD; color: #185FA5; background: #E6F1FB; font-weight: 500; }
+
+    /* SECTIONS */
+    .section { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
+    .section-label { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .section h2 { font-size: 26px; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .section > p { font-size: 15px; color: #666; margin-bottom: 2rem; line-height: 1.7; }
+    .divider { border: none; border-top: 1px solid #eee; max-width: 860px; margin: 0 auto; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .feat-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 1.25rem; }
+    .feat-icon { font-size: 22px; margin-bottom: 10px; }
+    .feat-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #111; }
+    .feat-card p { font-size: 13px; color: #666; line-height: 1.5; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .plan-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 1.5rem; }
+    .plan-card.popular { border: 2px solid #185FA5; }
+    .popular-badge { background: #E6F1FB; color: #185FA5; font-size: 11px; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 12px; font-weight: 500; }
+    .plan-name { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 6px; }
+    .plan-price { font-size: 28px; font-weight: 600; color: #111; margin-bottom: 4px; }
+    .plan-price span { font-size: 14px; font-weight: 400; color: #888; }
+    .plan-desc { font-size: 12px; color: #888; margin-bottom: 1rem; }
+    .plan-features { list-style: none; margin-bottom: 1.5rem; }
+    .plan-features li { font-size: 13px; color: #555; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+    .plan-features li::before { content: "✓"; color: #1D9E75; font-weight: 600; }
+    .plan-btn { width: 100%; padding: 10px; border-radius: 8px; font-size: 14px; cursor: pointer; border: 1px solid #ddd; background: transparent; color: #333; font-weight: 500; }
+    .plan-btn.primary { background: #185FA5; color: #fff; border: none; }
+    .plan-btn:hover { background: #f5f5f3; }
+    .plan-btn.primary:hover { background: #0C447C; }
+
+    /* WAITLIST */
+    .waitlist-section { background: #fff; border-top: 1px solid #eee; padding: 4rem 2rem; text-align: center; }
+    .waitlist-section h2 { font-size: 24px; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .waitlist-section p { font-size: 15px; color: #666; margin-bottom: 1.5rem; }
+    .email-row { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
+    .email-row input { flex: 1; padding: 11px 16px; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; color: #111; background: #f9f9f7; }
+    .email-row input:focus { outline: none; border-color: #185FA5; }
+    .email-row button { background: #185FA5; color: #fff; border: none; padding: 11px 22px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 500; white-space: nowrap; }
+    .email-row button:hover { background: #0C447C; }
+    .success-msg { display: none; font-size: 14px; color: #0F6E56; margin-top: 12px; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 2rem; font-size: 13px; color: #aaa; border-top: 1px solid #eee; }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 26px; }
+      .flow-preview { gap: 4px; }
+      .nav-links { display: none; }
+      .email-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚡ PulseDesk</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#waitlist" class="nav-cta">Get early access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">✨ Powered by AI + n8n</div>
+  <h1>Customer feedback,<br><span>handled automatically</span></h1>
+  <p>PulseDesk routes every complaint, feature request, and compliment to the right team — instantly. No manual triage, no missed tickets.</p>
+  <div class="cta-row">
+    <a href="#waitlist" class="btn-primary">Start free trial</a>
+    <a href="#features" class="btn-ghost">See how it works</a>
+  </div>
+  <div class="flow-preview">
+    <div class="flow-node">📋 Form submission</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node hl">🤖 AI classifies</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">💬 Right channel</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">✅ Done</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- FEATURES -->
+<div class="section" id="features">
+  <div class="section-label">What you get</div>
+  <h2>Everything your support team needs</h2>
+  <p>Set it up once. PulseDesk handles routing, recording, and reporting — forever.</p>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🤖</div>
+      <h3>AI classification</h3>
+      <p>Complaint, feature request, or compliment — auto-detected every time</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💬</div>
+      <h3>Smart routing</h3>
+      <p>High, medium, low priority go to separate Slack channels automatically</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🗄️</div>
+      <h3>Central records</h3>
+      <p>Every ticket logged and stored — searchable, sortable, exportable</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📧</div>
+      <h3>Email alerts</h3>
+      <p>Critical complaints trigger instant email to your team, no delays</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PRICING -->
+<div class="section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2>Simple, honest pricing</h2>
+  <p>Start free. Scale as you grow.</p>
+  <div class="pricing-grid">
+    <div class="plan-card">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price">Free</div>
+      <div class="plan-desc">For small teams trying it out</div>
+      <ul class="plan-features">
+        <li>100 submissions/month</li>
+        <li>1 Slack workspace</li>
+        <li>Basic AI routing</li>
+        <li>Email support</li>
+      </ul>
+      <a href="#waitlist"><button class="plan-btn">Get started</button></a>
+    </div>
+    <div class="plan-card popular">
+      <div class="popular-badge">Most popular</div>
+      <div class="plan-name">Growth</div>
+      <div class="plan-price">₹2,499 <span>/month</span></div>
+      <div class="plan-desc">For growing product teams</div>
+      <ul class="plan-features">
+        <li>2,000 submissions/month</li>
+        <li>3 Slack workspaces</li>
+        <li>Priority routing + labels</li>
+        <li>Analytics dashboard</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="#waitlist"><button class="plan-btn primary">Start free trial</button></a>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Scale</div>
+      <div class="plan-price">₹7,999 <span>/month</span></div>
+      <div class="plan-desc">For large support operations</div>
+      <ul class="plan-features">
+        <li>Unlimited submissions</li>
+        <li>Custom integrations</li>
+        <li>White-label option</li>
+        <li>Dedicated account manager</li>
+        <li>SLA guarantee</li>
+      </ul>
+      <a href="#waitlist"><button class="plan-btn">Talk to us</button></a>
+    </div>
+  </div>
+</div>
+
+<!-- WAITLIST -->
+<div class="waitlist-section" id="waitlist">
+  <h2>Join the early access list</h2>
+  <p>Early users get 3 months free on any paid plan.</p>
+  <div class="email-row">
+    <input type="email" id="emailInput" placeholder="aapka@email.com" />
+    <button onclick="joinWaitlist()">Join waitlist</button>
+  </div>
+  <div class="success-msg" id="successMsg">✅ Done! We'll reach out soon.</div>
+</div>
+
+<footer>
+  © 2026 PulseDesk · Made with ❤️ in India
+</footer>
+
+<script>
+  function joinWaitlist() {
+    const email = document.getElementById('emailInput').value;
+    if (!email || !email.includes('@')) {
+      document.getElementById('emailInput').style.borderColor = '#E24B4A';
+      return;
+    }
+    document.getElementById('emailInput').style.borderColor = '#1D9E75';
+    document.querySelector('.email-row').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
