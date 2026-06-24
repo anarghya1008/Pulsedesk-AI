@@ -217,16 +217,28 @@
 </footer>
 
 <script>
-  function joinWaitlist() {
-    const email = document.getElementById('emailInput').value;
-    if (!email || !email.includes('@')) {
-      document.getElementById('emailInput').style.borderColor = '#E24B4A';
-      return;
-    }
-    document.getElementById('emailInput').style.borderColor = '#1D9E75';
-    document.querySelector('.email-row').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
+async function joinWaitlist() {
+  const email = document.getElementById('emailInput').value;
+
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailInput').style.borderColor = '#E24B4A';
+    return;
   }
+
+  await fetch('https://anarghya.app.n8n.cloud/webhook-test/waitlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: email
+    })
+  });
+
+  document.getElementById('emailInput').style.borderColor = '#1D9E75';
+  document.querySelector('.email-row').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
 </script>
 
 </body>
