@@ -52,7 +52,7 @@ Landing Page: https://anarghya1008.github.io/Pulsedesk-AI/
 ![n8n Workflow](n8n%20Workflow.png)
 
 ### Airtable Database
-![Airtable Database](Pulsedesk%20Airtable%20Database.png)
+![Airtable Database](airtable-database.png)
 
 ### Slack Notification
 ![Slack Notification](Slack%20notification%20screenshot.png)
