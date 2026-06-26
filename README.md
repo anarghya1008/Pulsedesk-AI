@@ -43,6 +43,23 @@ Landing Page: https://anarghya1008.github.io/Pulsedesk-AI/
 8. Complaint customers receive acknowledgement emails.
 9. Weekly analytics reports are generated automatically.
 
+## Project Screenshots
+
+### Landing Page
+![Landing Page](Landing%20Page.png)
+
+### n8n Workflow
+![n8n Workflow](n8n%20Workflow.png)
+
+### Airtable Database
+![Airtable Database](Pulsedesk%20Airtable%20Database.png)
+
+### Slack Notification
+![Slack Notification](Slack%20notification%20screenshot.png)
+
+### Gmail Acknowledgement Email
+![Gmail Acknowledgement Email](Gmail%20acknowledgement%20email%20screenshot.png)
+
 ## Use Cases
 
 * SaaS customer support
